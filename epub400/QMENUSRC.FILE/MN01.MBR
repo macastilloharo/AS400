@@ -1,0 +1,9 @@
+               Description o Proyect Name
+
+                  Main 1
+    1. Option 1                                                                &CALL PGM02
+    2. Option 2                                                                &CALL PGM03
+    3. Option 3                                                                &CALL PGM04
+    4. Option 4                                                                &CALL PGM05
+  100. Exit                                                                    &FINALIZAR
+

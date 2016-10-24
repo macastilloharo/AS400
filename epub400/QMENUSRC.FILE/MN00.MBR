@@ -1,0 +1,9 @@
+               Description o Proyect Name
+
+                                Main Menu
+    1. Main 1                                                                  @MN01
+    2. Main 2                                                                  @MN02
+    3. Main 3                                                                  @MN03
+    4. Option                                                                  &CALL PGM01
+  100. Exit                                                                    &EXIT
+

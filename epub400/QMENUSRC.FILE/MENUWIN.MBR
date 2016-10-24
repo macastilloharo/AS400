@@ -1,0 +1,76 @@
+     A*%%TS  SD  20161024  084235  MANGEL      REL-V7R3M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      PRINT
+     A          R F0
+     A*%%TS  SD  20161024  084235  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      CF03(03 'Salir.')
+     A                                      RTNDTA
+     A                                      OVERLAY
+     A            FORMA         78A  O 24  2DSPATR(RI)
+     A                                 22  2'F3=Salir'
+     A                                      COLOR(BLU)
+     A                                 22 13'F5=Renovar'
+     A                                      COLOR(BLU)
+     A                                 21  2'                                  -
+     A                                                                         -
+     A                                              '
+     A                                      DSPATR(HI)
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A          R F1                        SFL
+     A*%%TS  SD  20011030  183228  MANGEL      REL-V4R4M0  5769-PW1
+     A                                      SFLNXTCHG
+     A            ITEM          70   O  8  6
+     A          R F1CT                      SFLCTL(F1)
+     A*%%TS  SD  20161024  083834  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      SFLPAG(0012)
+     A                                      CF03(03 'Salir.')
+     A                                      CF05(05 'Renovar.')
+     A                                      RTNDTA
+     A                                      OVERLAY
+     A                                      SFLCSRRRN(&NRR)
+     A  50                                  SFLDSP
+     A                                      SFLDSPCTL
+     A  69                                  SFLCLR
+     A                                      SFLSIZ(&SFLSIZ)
+     A                                      SFLSNGCHC
+     A            POSI           3S 0H      SFLRCDNBR(CURSOR)
+     A            TITU1         78A  O  1  3DSPATR(HI)
+     A                                  6  3'Seleccione una opción y pulse Intr-
+     A                                      o.'
+     A                                      COLOR(BLU)
+     A            NRR            5S 0H
+     A            SFLSIZ         5S 0P
+     A            TITU2         78A  O  2  3DSPATR(HI)
+     A            TITU3         78A  O  3  3DSPATR(HI)
+     A          R F2
+     A*%%TS  SD  20161024  083834  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      WINDOW(8 9 6 60 *NOMSGLIN)
+     A                                      OVERLAY
+     A            NUMEOPCION     2S 0O  1 34DSPATR(HI)
+     A                                  3  9'No tiene autorización para la opci-
+     A                                      ón elegida'
+     A                                  1 26'Opción:'
+     A                                  6 25'Pulse Intro'
+     A                                      DSPATR(HI)
+     A          R F3
+     A*%%TS  SD  20161024  083834  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      WINDOW(8 9 6 60 *NOMSGLIN)
+     A                                      OVERLAY
+     A            NUMEOPCION     2S 0O  1 34DSPATR(HI)
+     A                                  3  7'La opción elegida no está disponib-
+     A                                      le actualmente'
+     A                                  1 26'Opción:'
+     A                                  6 25'Pulse Intro'
+     A                                      DSPATR(HI)
+     A          R F4
+     A*%%TS  SD  20161024  083834  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      WINDOW(8 9 6 60 *NOMSGLIN)
+     A                                      OVERLAY
+     A            NUMEOPCION     2S 0O  1 34DSPATR(HI)
+     A                                  3 12'Se ha producido un error. Avise a -
+     A                                      CPD.'
+     A                                  1 26'Opción:'
+     A                                  6 25'Pulse Intro'
+     A                                      DSPATR(HI)

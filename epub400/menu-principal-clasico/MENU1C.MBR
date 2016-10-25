@@ -1,0 +1,47 @@
+
+/**************************************************************************************************/
+/*                                                                                                */
+/* Programa...........: MENU1C                                                                    */
+/* Descripción........: Menú principal clásico                                                    */
+/* Especificaciones...: xx-xxxxxx                                                                 */
+/* Creado por.........: MACH                                                                      */
+/* Con fecha..........: 09/2016                                                                   */
+/*                                                                                                */
+/* Modificaciones                                                                                 */
+/* --------------                                                                                 */
+/* XX/XX/XXXX  por XXXXXXXXXX para XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                 */
+/*                                                                                                */
+/**************************************************************************************************/
+    Pgm
+    dclf      menu1w
+
+
+ Inicio:
+
+    sndrcvf    rcdfmt(F0)
+
+    /* Tecla F3=Salir    -----------------------------------------------------*/
+    If  ( &IN03 ) GOTO FIN
+
+    /* Opcion 1: Item 1  -----------------------------------------------------*/
+    If  ( &WOPCION = 1 )   CALL MENUC01 &WOPCION
+
+    /* Opcion 2: Item 2  -----------------------------------------------------*/
+    If  ( &WOPCION = 2 )   CALL MENUC02 &WOPCION
+
+    /* Opcion 3: Item 3  -----------------------------------------------------*/
+    If  ( &WOPCION = 3 )   CALL MENUC03 &WOPCION
+
+    /* Opcion 4: Item 4  -----------------------------------------------------*/
+    If  ( &WOPCION = 4 )   CALL MENUC04 &WOPCION
+
+    /* Opcion 5: Item 5  -----------------------------------------------------*/
+    If  ( &WOPCION = 5 )   CALL MENUC05 &WOPCION
+
+    chgvar &WOPCION 0
+
+    goto inicio
+
+  Fin:
+
+    Endpgm

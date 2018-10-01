@@ -41,3 +41,27 @@ Los miembros utilizados son los siguientes:
 <tr><td>MNDEMO01</td>    <td>TXT</td>         <td>Menú tablas auxiliares</td></tr>                             
 
 </table>
+<br><br>
+<H2>Muestra de ventanas de la demo</H2>
+<br>
+![menu-principal](https://user-images.githubusercontent.com/15638469/46304701-b4ea4200-c5af-11e8-819b-ddbe876c2512.png)
+<br>
+![mantenimiento-provincias](https://user-images.githubusercontent.com/15638469/46304800-f0850c00-c5af-11e8-85d4-19c72426d4bb.png)
+<br>
+![mantenimiento-provincias-2](https://user-images.githubusercontent.com/15638469/46304803-f24ecf80-c5af-11e8-994f-b46cb3bc790d.png)
+<br>
+![mantenimiento-contactos](https://user-images.githubusercontent.com/15638469/46304808-f549c000-c5af-11e8-9139-16540e802394.png)
+<br>
+![mantenimiento-contactos-2](https://user-images.githubusercontent.com/15638469/46304812-f844b080-c5af-11e8-8cda-a6dd82688df3.png)
+<br>
+![mantenimiento-contactos-3](https://user-images.githubusercontent.com/15638469/46304816-f975dd80-c5af-11e8-9793-5e7dfa394ecb.png)
+<br>
+![mantenimiento-contactos-4](https://user-images.githubusercontent.com/15638469/46304819-fbd83780-c5af-11e8-9d14-27dae77cedef.png)
+<br>
+![salida-impresa-contactos](https://user-images.githubusercontent.com/15638469/46304821-fda1fb00-c5af-11e8-88db-71c44cbc6b58.png)
+
+
+
+
+
+

@@ -1,14 +1,14 @@
 <h1>Demo de Código para Comercial del Sur Papelería </h1><br>
 
 <p>
-Los archivos contenidos en esta demo representan una muestra significativa el diferente tipo de codificación empleado en el desarrollo
+Los archivos contenidos en esta demo representan una muestra significativa del diferente tipo de codificación empleado en el desarrollo
 de aplicaciones bajo el entorno <b>AS400 RPG</b>. 
 </p>
 <p>
 Se ha desarrollado una aplicación CRUD para una tabla de <em>Contactos</em> así como para 2 tablas auxiliares: <em>Provincias</em> y <em>Códigos Postales</em>. 
 </p>
 <p>
-Se ha habilitado también un <em>menú dinámico</em> en el cual es posible insertar opciones al mismo sin compilar. Tan solo modificando el contenido
+Se ha habilitado, también, un <em>menú dinámico</em> en el cual es posible insertar opciones al mismo sin compilar. Tan solo modificando el contenido
 de los miembros de tipo TXT.
 </p>
 

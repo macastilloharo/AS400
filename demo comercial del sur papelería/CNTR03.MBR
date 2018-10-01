@@ -1,0 +1,430 @@
+      **********************************************************************************************
+      * Nombre............ CNTR03
+      * Descripción....... Mantenimiento de contactos
+      * Realizado por..... macastillo
+      * Con fecha......... 27/09/2018
+      * Compilación.......
+      * Modificaciones:
+      * xx/xx/xxxx por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      *
+      **********************************************************************************************
+      *
+     H decedit('0,')  datfmt(*eur)
+      *
+     Fcntf03    uf a e           k disk
+     Fcntf01    if   e           k disk
+     Fcntf02    if   e           k disk
+     Fcntw03    cf   e             workstn sfile(f1:sfnum) infds(infds)
+     Fqsysprt   o    f  132        printer oflind(*inof) usropn
+      *
+     D/copy mangel1/demo,teclas
+      *
+     D  tagNuevo       c                   'Crear Contacto'
+     D  tagEditar      c                   'Editar Contacto'
+     D  tagBorrar      c                   'Suprimir Contacto'
+     D  tagTeclas1     c                   'F5=Grabar  F12=Cancelar'
+     D  tagTeclas2     c                   'F12=Cancelar  F23=Suprimir'
+      *
+     D  HayError       s               n
+     D  FechaEur       s               d   datfmt( *EUR )
+     D  Fecha          s              8s 0
+      *
+     D  AccionNuevo    s               n
+     D  AccionEditar   s               n
+     D  AccionBorrar   s               n
+      *
+     D  validarDocu    c                   'NIFCIF'
+      *
+      * Defino claves.
+     C     kcntf02       klist
+     C                   kfld                    WCODP
+     C                   kfld                    WLOCA
+      *
+      * Presentamos el formato de pantalla Principal.
+     C                   write     f0
+     C                   Dow       '1'
+     C                   If        sfnum = 0
+     C                   write     f1b
+     C                   endif
+     C                   exfmt     f1ct
+      *
+     C                   Eval      AccionNuevo  = *OFF
+     C                   Eval      AccionEditar = *OFF
+     C                   Eval      AccionBorrar = *OFF
+      *
+      * Si pulso F3=Salir.
+     C                   If        tecla = F03
+     C                   leave
+     C                   Endif
+      *
+      * Si pulso F6=Nuevo.
+     C                   If        tecla = F06
+     C                   Eval      AccionNuevo = *ON
+     C                   exsr      §Presentar
+     C                   exsr      §CargarSF
+     C                   Endif
+      *
+      * Si pulsa F8=Imprimir.
+     C                   If        tecla = F08
+     C                   exsr      §Imprimir
+     C                   Endif
+      *
+      * Comprobamos si ha seleccionado alguna opción.
+      * Por *in88 controlaremos si se ha suprimido y refrescaremos los datos.
+     C                   setoff                                       88
+      *
+     C                   exsr      §miroSF
+      *
+     C                   If        *in88
+     C                   exsr      §CargarSF
+     C                   Endif
+      *
+     C                   Enddo
+      *
+      * Finalizamos el programa.
+     C                   Eval      *inLR = *ON
+      *
+      *=============================================================================================
+      *  Para presentar la pantalla para grabar, editar y suprimir datos.
+      *
+      *  Indicadores:
+      *  43 Protegemos campo WDOCU
+      *  44 Protegemos resto de campos
+      *
+      *=============================================================================================
+     C     §Presentar    Begsr
+      *
+      * Inicializamos datos.
+     C                   setoff                                       43
+     C                   clear                   WTAG
+     C                   clear                   WTECLAS
+     C                   clear                   f2
+      *
+      * Controlamos datos según la acción elegida.
+     C                   If        AccionNuevo
+     C                   eval      WTAG = tagNuevo
+     C                   eval      WTECLAS = tagTeclas1
+     C                   setoff                                       4344
+     C                   Endif
+      *
+     C                   If        AccionEditar
+     C                   eval      WTAG = tagEditar
+     C                   eval      WTECLAS = tagTeclas1
+     C                   eval      WDOCU   = WSDOCU
+     C     WDOCU         chain     rcntf03
+     C                   If        %found
+     C                   eval      WNOMB = NOMB
+     C                   eval      WAPE1 = APE1
+     C                   eval      WAPE2 = APE2
+     C                   eval      WDIRE = DIRE
+     C                   eval      WCODP = CODP
+     C                   eval      WLOCA = LOCA
+     C                   eval      WPROV = PROV
+     C                   Endif
+     C                   seton                                        43
+     C                   Endif
+      *
+     C                   If        AccionBorrar
+     C                   eval      WTAG = tagBorrar
+     C                   eval      WTECLAS = tagTeclas2
+     C                   eval      WDOCU   = WSDOCU
+     C     WDOCU         chain     rcntf03
+     C                   If        %found
+     C                   eval      WNOMB = NOMB
+     C                   eval      WAPE1 = APE1
+     C                   eval      WAPE2 = APE2
+     C                   eval      WDIRE = DIRE
+     C                   eval      WCODP = CODP
+     C                   eval      WLOCA = LOCA
+     C                   eval      WPROV = PROV
+     C                   Endif
+     C                   seton                                        4344
+     C                   Endif
+      *
+      * Presentamos el formato.
+     C                   Dow       '1'
+     C                   exfmt     f2
+     C                   setoff                                       313233    *
+     C                   setoff                                       343536    *
+     C                   setoff                                       373839    *
+     C                   setoff                                       4041      *
+      *
+      * Si pulsa F12=Cancelar.
+     C                   If        tecla = F12
+     C                   leave
+     C                   endif
+      *
+      * Si pulsa F5=Grabar.
+     C                   If            tecla = F05
+     C                             and (AccionNuevo or AccionEditar)
+     C                   exsr      §Validar
+     C                   If        HayError
+     C                   iter
+     C                   Endif
+     C                   exsr      §Grabar
+     C                   If        AccionEditar
+     C                   leave
+     C                   Endif
+     C                   Endif
+      *
+      * Si pulsa F23=Suprimir.
+     C                   If            tecla = F23
+     C                             and AccionBorrar
+     C                   exsr      §Grabar
+     C                   leave
+     C                   Endif
+      *
+     C                   Enddo
+      *
+     C                   Endsr
+      *
+      *
+      *=============================================================================================
+      *  §Validar: Para realizar la validación del formato de pantalla.
+      *=============================================================================================
+     C     §Validar      Begsr
+      *
+     C                   Eval      HayError = *OFF
+      *
+     C                   If        WDOCU = *blanks
+     C                   seton                                        31
+     C                   Else
+     C                   call      validarDocu
+     C                   parm      WDOCU         pdocu             9
+     C     presultado    parm      *blanks       presultado        1
+     C                   If        presultado <> *blanks
+     C                   seton                                        32
+     C                   Endif
+     C                   Endif
+      *
+     C     WNOMB         cab       *blanks                                33
+     C     WAPE1         cab       *blanks                                34
+     C     WDIRE         cab       *blanks                                35
+      *
+     C                   If        WCODP = *blanks
+     C                   seton                                        36
+     C                   Else
+     C     WCODP         chain     rcntf02
+     C                   If        not %found
+     C                   seton                                        37
+     C                   Endif
+     C                   Endif
+      *
+     C                   If        WLOCA = *blanks
+     C                   seton                                        38
+     C                   Else
+     C     kcntf02       chain     rcntf02
+     C                   If        not %found
+     C                   seton                                        39
+     C                   Endif
+     C                   Endif
+      *
+     C                   If        WPROV = *blanks
+     C                   seton                                        40
+     C                   Else
+     C                   clear                   rcntf01
+     C                   movel     WCODP         CODIGO
+     C     CODIGO        chain     rcntf01
+     C                   If        not %found
+     C                   seton                                        41
+     C                   Else
+     C     NOMBRE        cabne     WPROV                              4141
+     C                   Endif
+     C                   Endif
+      *
+     C                   If           *in31
+     C                             or *in32
+     C                             or *in33
+     C                             or *in34
+     C                             or *in35
+     C                             or *in36
+     C                             or *in37
+     C                             or *in38
+     C                             or *in39
+     C                             or *in40
+     C                             or *in41
+     C                   eval      HayError = *ON
+     C                   Endif
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  §Grabar: Para grabar los datos.
+      *=============================================================================================
+     C     §Grabar       Begsr
+      *
+     C                   If        AccionNuevo
+     C                   eval      DOCU =  WDOCU
+     C                   eval      NOMB =  WNOMB
+     C                   eval      APE1 =  WAPE1
+     C                   eval      APE2 =  WAPE2
+     C                   eval      DIRE =  WDIRE
+     C                   eval      CODP =  WCODP
+     C                   eval      LOCA =  WLOCA
+     C                   eval      PROV =  WPROV
+     C                   write     rcntf03
+     C                   Endif
+      *
+     C                   If        AccionEditar
+     C     WSDOCU        chain     rcntf03
+     C                   If        %found
+     C                   eval      NOMB =  WNOMB
+     C                   eval      APE1 =  WAPE1
+     C                   eval      APE2 =  WAPE2
+     C                   eval      DIRE =  WDIRE
+     C                   eval      CODP =  WCODP
+     C                   eval      LOCA =  WLOCA
+     C                   eval      PROV =  WPROV
+     C                   update    rcntf03
+     C                   Eval      WSNOMBRE = %trim(NOMB)+' '+%TRIM(APE1)+' '
+     C                                      + %TRIM(APE2)
+     C                   Endif
+     C                   Endif
+      *
+     C                   If        AccionBorrar
+     C     WSDOCU        chain     rcntf03
+     C                   If        %found
+     C                   delete    rcntf03
+     C                   seton                                        88
+     C                   Endif
+     C                   Endif
+      *
+     C                   clear                   WDOCU
+     C                   clear                   WNOMB
+     C                   clear                   WAPE1
+     C                   clear                   WAPE2
+     C                   clear                   WDIRE
+     C                   clear                   WCODP
+     C                   clear                   WLOCA
+     C                   clear                   WPROV
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  Para preparar y cargar el subfichero.
+      *=============================================================================================
+     C     §CargarSF     Begsr
+      *
+     C                   seton                                        69
+     C                   write     f1ct
+     C                   setoff                                       69
+      *
+     C                   clear                   sfnum             4 0
+     C                   clear                   wsopcion
+      *
+     C     *loval        setll     rcntf03
+     C                   Dow       '1'
+     C                   read      rcntf03                                20
+     C   20              leave
+     C                   add       1             sfnum
+     C                   Eval      WSDOCU   = DOCU
+     C                   Eval      WSNOMBRE = %trim(NOMB)+' '+%TRIM(APE1)+' '
+     C                                      + %TRIM(APE2)
+     C                   write     f1
+     C                   Enddo
+      *
+     C     sfnum         cab       0                                  5050
+     C   50              Eval      posi = 1
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *   Para realizar la salida impresa.
+      *=============================================================================================
+     C     §Imprimir     Begsr
+      *
+     C                   open      qsysprt
+      *
+     C                   except    cabe
+      *
+     C     *loval        setll     rcntf03
+     C                   setoff                                       20
+     C                   Dow       *in20 = *off
+     C                   read      rcntf03                                20
+      *
+     C                   If        *inof
+     C                   except    cabe
+     C                   Endif
+      *
+     C                   clear                   vnombre          50
+     C                   Eval      vnombre  = %trim(NOMB)+' '+%TRIM(APE1)+' '
+     C                                      + %TRIM(APE2)
+     C                   except    deta
+      *
+     C                   Enddo
+      *
+     C                   close     qsysprt
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  Tareas a ejecutar antes del inicio.
+      *=============================================================================================
+     C     *Inzsr        Begsr
+      *
+      * Inicializamos datos.
+     C                   movel     *date         FechaEur
+     C                   movel     FechaEur      Fecha
+      *
+      * Preparamos subfichero.
+     C                   exsr      §CargarSF
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  Para comprobar las opciones seleccionadas.
+      *=============================================================================================
+     C     §miroSF       Begsr
+      *
+     C                   If        sfnum <> 0
+      *
+     C                   Dow       '1'
+     C                   readc     f1                                     20
+     C   20              leave
+      *
+     C                   eval      AccionEditar = *OFF
+     C                   eval      AccionBorrar   = *OFF
+      *
+     C                   If        WSOPCION = 2
+     C                   eval      AccionEditar = *ON
+     C                   exsr      §Presentar
+     C                   Endif
+      *
+     C                   If        WSOPCION = 4
+     C                   eval      AccionBorrar   = *ON
+     C                   exsr      §Presentar
+     C                   Endif
+      *
+     C                   clear                   WSOPCION
+     C                   update    f1
+     C                   Enddo
+      *
+     C                   Endif
+      *
+     C                   Endsr
+      *
+      *
+      *
+     OQSYSPRT   e            cabe        1    02
+     O                                           10 'EMPRESA   '
+     O                                           69 ' Fecha:'
+     O                       Fecha               80 '  -  -    '
+     O          e            cabe        1
+     O                                           48 'LISTADO DE CONTACTOS'
+     O                                           69 'Página:'
+     O                       page          z     80
+     O          e            cabe        1
+     O                                           48 '----------------------'
+     O          e            cabe        1
+     O                                            9 'DOCUMENTO'
+     O                                           17 'NOMBRE'
+     O          e            cabe        1  2
+     O                                            9 '---------'
+     O                                           31 '--------------------'
+     O                                           51 '--------------------'
+     O                                           53 '-----'
+     O          e            deta           1
+     O                       DOCU                 9
+     O                       vnombre             53
+
+

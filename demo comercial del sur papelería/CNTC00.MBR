@@ -1,0 +1,44 @@
+
+/**************************************************************************************************/
+/*                                                                                                */
+/* Programa...........: CNTC00                                                                    */
+/* Descripción........: Gestión de contactos.                                                     */
+/* Especificaciones...: ES-180001                                                                 */
+/* Creado por.........: macastillo                                                                */
+/* Con fecha..........: 27/09/2018                                                                */
+/*                                                                                                */
+/* Modificaciones                                                                                 */
+/* --------------                                                                                 */
+/* xx/xx/xxxx  por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  */
+/*                                                                                                */
+/**************************************************************************************************/
+    Pgm
+    dcl       &Biblioteca    *char     ( 10 )  'MANGEL1'
+    dcl       &Archivo       *char     ( 10 )  'DEMO'
+    dcl       &MiembroIni    *char     ( 10 )  'MNDEMO00'
+    dcl       &date          *char     (  6 )
+    dcl       &Fecha         *char     (  8 )
+    Dcl       &curlib        *char       10
+
+/* Establezco MANGEL1 como biblioteca de trabajo */
+/*-----------------------------------------------*/
+ rtvjoba curlib( &curlib )
+
+    rtvjoba   date( &date )
+    cvtdat    date( &date ) +
+              tovar( &Fecha ) +
+              fromfmt( *mdy ) +
+              tofmt( *dmyy ) +
+              tosep( *none )
+
+/* Ejecutamos el menú  */
+/*---------------------*/
+             CALL       PGM(MENUCIN) PARM(&BIBLIOTECA &ARCHIVO &MIEMBROINI)
+
+/* Dejo la biblioteca de trabajo como estaba */
+/*-------------------------------------------*/
+    if ( &curlib *eq '*NONE') chgvar &curlib '*CRTDFT'
+    chgcurlib &curlib
+
+    Endpgm
+

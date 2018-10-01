@@ -1,0 +1,29 @@
+
+/**************************************************************************************************/
+/*                                                                                                */
+/* Programa...........: cntc01                                                                    */
+/* Descripción........: Mantenimiento de provincias                                               */
+/* Especificaciones...: ES-180001                                                                 */
+/* Creado por.........: macastillo                                                                */
+/* Con fecha..........: 27/09/2018                                                                */
+/*                                                                                                */
+/* Modificaciones                                                                                 */
+/* --------------                                                                                 */
+/* xx/xx/xxxx  por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+/*                                                                                                */
+/**************************************************************************************************/
+    Pgm
+
+    ovrprtf    file( QPQUPRFIL ) +
+               tofile( QPQUPRFIL ) +
+               pagesize( *N 132 ) +
+               cpi( 15 ) +
+               hold( *yes) +
+               save( *yes)
+
+    call      cntr01
+
+    dltovr *all
+
+    Endpgm
+

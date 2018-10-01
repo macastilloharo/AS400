@@ -1,0 +1,15 @@
+     A****************************************************************
+     A*  FICHERO CONTROL PARA SABER LAS OPCIONES DE LOS MENUS        *
+     A*  A QUE TIENEN ACCESO LOS USUARIOS.-                          *
+     A** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX        XXXXXXXXXXXXXXXXXXX *
+     A****************************************************************
+     A                                      UNIQUE
+     A          R RCONTR
+     A            USUCR         10A         COLHDG('USUARIO')
+     A            PROCR         10A         COLHDG('PROGRAMA')
+     A            OPCCR          2A         COLHDG('OPCION')
+     A*--------------------------------------------------------------*
+     A          K USUCR
+     A          K PROCR
+     A          K OPCCR
+

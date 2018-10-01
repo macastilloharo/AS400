@@ -1,0 +1,110 @@
+     A*%%TS  SD  20181001  143139  MANGEL      REL-V7R3M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A          R F0
+     A*%%TS  SD  20180928  165226  MANGEL      REL-V7R3M0  5770-WDS
+     A                                 23  2'F3=Salir'
+     A                                      COLOR(BLU)
+     A                                 23 13'F6=Nuevo'
+     A                                      COLOR(BLU)
+     A                                 23 25'F8=Imprimir'
+     A                                      COLOR(BLU)
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A          R F2
+     A*%%TS  SD  20181001  143139  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      WINDOW(5 8 15 65)
+     A                                      CF05(05 'Nuevo')
+     A                                      CF12(12 'Cancelar')
+     A                                      CF23(23 'Suprimir')
+     A                                  4  2'Documento'
+     A                                  5  2'Nombre'
+     A            WDOCU          9A  B  4 15DSPATR(HI)
+     A  43                                  DSPATR(PR)
+     A  31                                  ERRMSG('No ha introducido el docume-
+     A                                      nto')
+     A  32                                  ERRMSG('El documento introducido no-
+     A                                       es correcto')
+     A            WNOMB         30A  B  5 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A  33                                  ERRMSG('No ha introducido nombre')
+     A            WTAG          30A  O  2 16DSPATR(HI)
+     A            WTECLAS       50A  O 14  1COLOR(BLU)
+     A                                  6  2'Apellido 1'
+     A                                  7  2'Apellido 2'
+     A                                  8  2'Dirección'
+     A                                  9  2'C. Postal'
+     A                                 10  2'Localidad'
+     A                                 11  2'Provincia'
+     A            WAPE1         30A  B  6 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A  34                                  ERRMSG('No ha introducido apellido -
+     A                                      1')
+     A            WAPE2         30A  B  7 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A            WDIRE         50A  B  8 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A  35                                  ERRMSG('No ha introducido domicilio-
+     A                                      ')
+     A            WCODP          5A  B  9 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A  36                                  ERRMSG('No ha introducido CP')
+     A  37                                  ERRMSG('CP Incorrecto')
+     A            WLOCA         50A  B 10 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A  38                                  ERRMSG('No ha introducido localidad-
+     A                                      ')
+     A  39                                  ERRMSG('El CP/Localidad introducido-
+     A                                       no es correcto.')
+     A            WPROV         50A  B 11 15DSPATR(HI)
+     A  44                                  DSPATR(PR)
+     A  40                                  ERRMSG('No ha introducido provincia-
+     A                                      ')
+     A  41                                  ERRMSG('La provincia introducida no-
+     A                                       es correcta.')
+     A          R F1                        SFL
+     A*%%TS  SD  20180928  165226  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      SFLNXTCHG
+     A            WSOPCION       1Y 0B  8  4EDTCDE(Z)
+     A                                      VALUES(2 4)
+     A            WSDOCU         9A  O  8  8
+     A            WSNOMBRE      50A  O  8 19
+     A          R F1CT                      SFLCTL(F1)
+     A*%%TS  SD  20180927  182245  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      SFLSIZ(9999)
+     A                                      SFLPAG(0014)
+     A                                      CF03(03 'Salir')
+     A                                      CF06(06 'Nuevo')
+     A                                      CF08(08 'Imprimir')
+     A                                      OVERLAY
+     A  50                                  SFLDSP
+     A                                      SFLDSPCTL
+     A  69                                  SFLCLR
+     A            POSI           4S 0O  2  3DSPATR(ND)
+     A                                      SFLRCDNBR
+     A                                  7  3'Opc'
+     A                                      DSPATR(HI)
+     A                                  7  8'Documento'
+     A                                      DSPATR(HI)
+     A                                  7 19'Nombre'
+     A                                      DSPATR(HI)
+     A                                  2 28'Mantenimiento de Contactos'
+     A                                      DSPATR(HI)
+     A                                  4  3'Seleccione una opción y pulse Intr-
+     A                                      o.'
+     A                                      COLOR(BLU)
+     A                                  5  3'2=Editar, 4=Suprimir'
+     A                                      COLOR(BLU)
+     A                                  1 22'Demo para Comercial del Sur Papele-
+     A                                      ría'
+     A                                      COLOR(RED)
+     A          R F1B
+     A*%%TS  SD  20180927  175333  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      OVERLAY
+     A                                 12 31'No existen registros'
+     A                                      DSPATR(BL)
+     A                                      DSPATR(HI)
+     A                                      COLOR(RED)

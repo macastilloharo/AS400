@@ -1,0 +1,152 @@
+      **********************************************************************************************
+      * Programa.............: NIFCIF                                                              *
+      * Descripción..........: Para validar un NIF O CIF                                           *
+      * NOTA:                                                                                      *
+      * El campo "RESPUESTA" se devolverá con *BLANKS, si el NIF O CIF es correcto, en caso        *
+      * contrario se devolverá con un uno.                                                         *
+      **********************************************************************************************
+     D S7              S              1    DIM(7)
+     D LET             S              1    DIM(24) CTDATA PERRCD(24)
+     D SLJ             S              1    DIM(10) CTDATA PERRCD(10)            LETRAS 1 AL 10
+     D                 DS
+     D  NUMERO                 1      9
+     D  CIF                    2      9
+     D  DNIX                   2      8
+     D  DNI                    1      8
+     D  SIGLA                  1      1
+     D  LETRA                  9      9
+     C*
+     C     *ENTRY        PLIST
+     C                   PARM                    NIFF              9
+     C                   PARM                    RESP              1
+     C*  RESP = 1 SI NIF ERRONEO
+     C                   MOVE      NIFF          NUMERO
+     C                   MOVE      *BLANKS       RESP
+     C                   SETOFF                                       303132
+     C                   MOVE      *ZEROS        DNIN
+     C*
+     C                   SETOFF                                       2725
+     C     SIGLA         IFEQ      ' '
+     C                   MOVEL     '0'           NUMERO
+     C                   END
+     C*--------
+     C     SIGLA         IFEQ      'X'
+     C                   TESTN                   DNIX                 27        EXTRANJEROS
+     C   27              MOVE      DNIX          DNIN              8 0
+     C                   SETON                                        30
+     C                   ELSE
+     C     SIGLA         IFGE      'A'                                          SOCIEDADES
+     C     SIGLA         ANDLE     'H'
+     C     SIGLA         OREQ      'K'
+     C     SIGLA         OREQ      'L'
+     C     SIGLA         OREQ      'M'
+     C     SIGLA         OREQ      'N'
+     C     SIGLA         OREQ      'S'
+     C     SIGLA         OREQ      'P'
+     C     SIGLA         OREQ      'Q'
+     C                   TESTN                   DNIX                 27
+     C   27              MOVEA     DNIX          S7
+     C                   SETON                                        31
+     C                   ELSE
+     C                   TESTN                   DNI                  27        PER. FISICA
+     C   27              MOVE      DNI           DNIN              8 0
+     C                   SETON                                        32
+     C                   END
+     C                   END
+     C  N27              SETON                                        25
+     C*
+     C     *IN25         IFNE      '1'
+     C     *IN31         ANDEQ     '0'
+      *
+     C     DNIN          DIV       23            V1                9 0
+     C     V1            MULT      23            V2                9 0
+      *
+     C     V2            IFGT      DNIN
+     C                   SUB       23            V2
+     C                   END
+      *
+     C     DNIN          SUB       V2            V3                9 0
+     C                   ADD       1             V3
+     C                   MOVEA     LET(V3)       LETR              1
+      *
+     C     LETRA         IFNE      LETR
+     C                   SETON                                        25
+     C                   END
+      *
+     C                   ELSE
+     C     *IN25         IFNE      '1'
+     C                   EXSR      SOCIED
+     C     LETRA         IFNE      CODIGO
+     C                   SETON                                        25
+     C                   END
+     C                   END
+     C                   END
+     C   25              MOVE      '1'           RESP
+     C                   SETON                                        LR
+     C**
+     C*----------------------------------------------------------------
+     C*   PROCESO PARA SOCIEDADES
+     C*----------------------------------------------------------------
+     C*
+     C     SOCIED        BEGSR
+     C                   Z-ADD     0             SUMA              2 0
+     C                   MOVE      S7(1)         DIGITO            1 0
+     C     DIGITO        MULT      2             VALOR             2 0
+     C                   MOVEL     VALOR         DIGI1             1 0
+     C                   MOVE      VALOR         DIGI2             1 0
+     C                   ADD       DIGI1         SUMA
+     C                   ADD       DIGI2         SUMA
+     C                   MOVE      S7(3)         DIGITO
+     C     DIGITO        MULT      2             VALOR
+     C                   MOVEL     VALOR         DIGI1
+     C                   MOVE      VALOR         DIGI2
+     C                   ADD       DIGI1         SUMA
+     C                   ADD       DIGI2         SUMA
+     C                   MOVE      S7(5)         DIGITO
+     C     DIGITO        MULT      2             VALOR
+     C                   MOVEL     VALOR         DIGI1
+     C                   MOVE      VALOR         DIGI2
+     C                   ADD       DIGI1         SUMA
+     C                   ADD       DIGI2         SUMA
+     C                   MOVE      S7(7)         DIGITO
+     C     DIGITO        MULT      2             VALOR
+     C                   MOVEL     VALOR         DIGI1
+     C                   MOVE      VALOR         DIGI2
+     C                   ADD       DIGI1         SUMA
+     C                   ADD       DIGI2         SUMA
+     C                   MOVE      S7(2)         DIGI1
+     C                   ADD       DIGI1         SUMA
+     C                   MOVE      S7(4)         DIGI1
+     C                   ADD       DIGI1         SUMA
+     C                   MOVE      S7(6)         DIGI1
+     C                   ADD       DIGI1         SUMA
+     C*
+     C     SUMA          IFEQ      0
+     C                   SETON                                        25
+     C                   ELSE
+     C*
+     C                   MOVE      SUMA          DIGI1
+     C     10            SUB       DIGI1         CC                2 0
+     C                   MOVE      CC            DIGI2
+     C     LETRA         IFNE      '0'
+     C     LETRA         ANDNE     '1'
+     C     LETRA         ANDNE     '2'
+     C     LETRA         ANDNE     '3'
+     C     LETRA         ANDNE     '4'
+     C     LETRA         ANDNE     '5'
+     C     LETRA         ANDNE     '6'
+     C     LETRA         ANDNE     '7'
+     C     LETRA         ANDNE     '8'
+     C     LETRA         ANDNE     '9'
+     C                   MOVE      SLJ(CC)       CODIGO
+     C                   ELSE
+     C                   MOVE      DIGI2         CODIGO            1
+     C                   END
+     C                   END
+     C*
+     C                   ENDSR
+     C*
+**     LETRAS VERIF. DNI
+TRWAGMYFPDXBNJZSQVHLCKET
+**     LETRAS VERIF. CIF
+ABCDEFGHIJ

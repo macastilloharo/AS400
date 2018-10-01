@@ -1,0 +1,26 @@
+     /*********************************************************************************************/
+     /*                                                                                           */
+     /* Fichero.........: CNTF03                                                                  */
+     /* Descripción.....: Contactos                                                               */
+     /* Especificaciones: ES-180001                                                               */
+     /* Creado por......: macastillo                                                              */
+     /* Con fecha.......: 27/09/2018                                                              */
+     /*                                                                                           */
+     /* Modificaciones..:                                                                         */
+     /*                                                                                           */
+     /* xx/xx/xxxx por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  */
+     /*                                                                                           */
+     /*********************************************************************************************/
+     A                                      UNIQUE
+     A          R RCNTF03
+     A            DOCU           9A         COLHDG('Nº Documento........')
+     A            NOMB          30A         COLHDG('Nombre..............')
+     A            APE1          30A         COLHDG('Apellido 1..........')
+     A            APE2          30A         COLHDG('Apellido 2..........')
+     A            DIRE          50A         COLHDG('Dirección...........')
+     A            CODP           5A         COLHDG('Código Postal.......')
+     A            LOCA          50A         COLHDG('Localidad...........')
+     A            PROV          50A         COLHDG('Provincia...........')
+      *---------------------------------------------------------------------------------------------
+     A          K DOCU
+

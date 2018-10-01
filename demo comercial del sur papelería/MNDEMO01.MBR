@@ -1,0 +1,9 @@
+                 Demo Comercial del Sur Papelería  - Gestión de Contactos
+
+                  Mantenimiento de Tablas Auxiliares
+    1. Provincias                                                              &call cntc01
+    2. Códigos Postales                                                        &call cntc02
+    3.                                                                         xxxxxxxxxxxxx
+    4.                                                                         xxxxxxxxxxxxx
+  100. Salir                                                                   &FINALIZAR
+

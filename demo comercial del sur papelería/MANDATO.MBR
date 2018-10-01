@@ -1,0 +1,28 @@
+      **********************************************************************************************
+      *                                                                                            *
+      * Programa ............: MANDATO                                                             *
+      * Descripción..........: Para ejecutar mandatos dentro de programas RPG                      *
+      * Creado por...........: macastillo                                                          *
+      * Con fecha............: 27/09/2018                                                          *
+      * Modificaciones:                                                                            *
+      * xx/xx/xxxxx por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx *
+      *                                                                                            *
+      **********************************************************************************************
+      *
+     d string          s            250
+     d pos             s              3  0
+     d len             s             15  5
+     c     *entry        plist
+     c                   parm                    string
+      *
+      * Se determina la longitud del mandato.
+     c     ' '           scan      string        pos                      20
+     c                   eval      pos = pos - 1
+     c                   if        *in20 and pos > 0
+     c                   eval      len = pos
+     c                   call      'QCMDEXC'
+     c                   parm                    string
+     c                   parm      250           len
+     c                   endif
+     c                   seton                                        lr
+

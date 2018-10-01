@@ -1,0 +1,71 @@
+     A*%%TS  SD  20180927  170855  MANGEL      REL-V7R3M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A          R F0
+     A*%%TS  SD  20180924  112302  MANGEL      REL-V7R3M0  5770-WDS
+     A                                 23  2'F3=Salir'
+     A                                      COLOR(BLU)
+     A                                 23 13'F6=Nuevo'
+     A                                      COLOR(BLU)
+     A                                 23 25'F8=Imprimir'
+     A                                      COLOR(BLU)
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A          R F2
+     A*%%TS  SD  20180925  105621  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      WINDOW(10 10 10 60)
+     A                                      CF05(05 'Nuevo')
+     A                                      CF12(12 'Cancelar')
+     A                                      CF23(23 'Suprimir')
+     A                                  4  2'Código:'
+     A                                  5  2'Nombre:'
+     A            WCODIGO        2Y 0B  4 10EDTCDE(Z)
+     A                                      DSPATR(HI)
+     A  31                                  ERRMSG('No ha introducido código')
+     A  32                                  ERRMSG('El código introducido ya ex-
+     A                                      iste')
+     A  43                                  DSPATR(PR)
+     A            WNOMBRE       50A  B  5 10DSPATR(HI)
+     A  33                                  ERRMSG('No ha introducido nombre.')
+     A  44                                  DSPATR(PR)
+     A            WTAG          30   O  2 16DSPATR(HI)
+     A            WTECLAS       50   O  9  1COLOR(BLU)
+     A          R F1                        SFL
+     A*%%TS  SD  20180927  150707  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      SFLNXTCHG
+     A            WSOPCION       1Y 0B  8  4EDTCDE(Z)
+     A                                      VALUES(0 2 4)
+     A            WSCODIGO       2S 0O  8 10
+     A            WSNOMBRE      50A  O  8 17
+     A          R F1CT                      SFLCTL(F1)
+     A*%%TS  SD  20180927  170855  MANGEL      REL-V7R3M0  5770-WDS
+     A                                      CF03(03 'Salir')
+     A                                      CF06(06 'Nuevo')
+     A                                      CF08(08 'Imprimir')
+     A                                      OVERLAY
+     A  50                                  SFLDSP
+     A                                      SFLDSPCTL
+     A  69                                  SFLCLR
+     A                                      SFLSIZ(9999)
+     A                                      SFLPAG(0014)
+     A            POSI           4S 0O  2  3DSPATR(ND)
+     A                                      SFLRCDNBR
+     A                                  7  3'Opc'
+     A                                      DSPATR(HI)
+     A                                  7  8'Código'
+     A                                      DSPATR(HI)
+     A                                  7 17'Nombre'
+     A                                      DSPATR(HI)
+     A                                  2 27'Mantenimiento de Provincias'
+     A                                      DSPATR(HI)
+     A                                  4  3'Seleccione una opción y pulse Intr-
+     A                                      o.'
+     A                                      COLOR(BLU)
+     A                                  5  3'2=Editar, 4=Suprimir'
+     A                                      COLOR(BLU)
+     A                                  1 22'Demo para Comercial del Sur Papele-
+     A                                      ría'
+     A                                      COLOR(RED)

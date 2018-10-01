@@ -1,0 +1,223 @@
+      **********************************************************************************************
+      * Nombre........: MENURIN                                                                    *
+      * Descripción...: Presentación de Menús.                                                     *
+      * Creado por....: macastillo                                                                 *
+      * Con fecha.....: xxxxxxxxxxxxxxxxxxxxxx                                                     *
+      * Notas.........: Compilar con OVERRIDE -> MENU es DEMO                                      *
+      **********************************************************************************************
+
+     h decedit('0,') datedit(*DMY.)
+      *
+     Fmenu      if   e             disk    usropn
+     fcontro00  if   e           k disk
+     fmenuwin   cf   e             workstn sfile( f1:sfnum ) infds(infds)
+      *
+     D salir           c                   'FINALIZAR'
+     D set             s             78    dim( 5 )                             Para Títulos
+     D sem             s             22    dim( 99 )                            Para Menúss
+     D sep             s             30    dim( 99 )                            Para Acciones
+     D seo             s              2  0 dim( 99 )                            Para nº opciones
+     D miembro         s             10
+     D IndiTitulo      s              1  0
+     D IndiItem        s              2  0
+     D in03            s              1N
+     D cmd             s            300
+     D len             s             15  5
+      *
+     D                sds
+     D usuario               254    263
+      *
+     D                uds                  dtaara(forma)
+     D forma                   1     78
+     D
+      *
+     D                 ds
+     D srcdta                  1    120
+     D  opcion                 1     75
+     D  tipo                  80     80
+     D  accion                81    120
+      *
+     D infds           ds
+     D  tecla                369    369
+     D/copy mangel1/demo,teclas
+      *
+      * Recibo parámetros.
+     C     *entry        plist
+     C                   parm                    arcac            10
+     C     miembro       parm                    miembro
+     C     opciones      parm                    opciones          3
+     C     *in03         parm      *in03         in03
+      *
+      * Defino claves.
+     C     kcontro00     klist
+     C                   kfld                    usuario
+     C                   kfld                    miembro
+     C                   kfld                    opcac             2
+      *
+      * Cargo el subfichero.
+     C                   exsr      §cargo
+      *
+      * Presento el menú.
+      * F3=Salir.
+     C                   move      opciones      posi
+     C                   if           posi = 0
+     C                             or posi > sflsiz
+     C                   eval      posi = 1
+     C                   endif
+     C                   Dou       tecla = F03
+     C                   write     F0
+     C                   exfmt     f1ct
+      *
+      * Si pulso F5=Renovar.
+     C                   if        tecla = F05
+     C                   exsr      §cargo
+     C                   eval      posi = 1
+     C                   iter
+     C                   endif
+      *
+      * Si pulso Intro.
+     C                   if        tecla = intro
+     C                   eval      numeopcion = seo(nrr)
+     C                   eval      posi = nrr
+     C                   move      nrr           opciones
+     C     nrr           chain     f1
+     C                   if        %found
+      *
+      * Salgo del menú.
+     C                   if           sem(sfnum) = salir
+     C                             or sep(sfnum) = salir
+     C                   seton                                        03
+     C                   leave
+     C                   endif
+      *
+      * Compruebo la autorización del usuario para la opción seleccionada.
+     C                   exsr      §auto
+      *
+      * Ejecuto la acción que corresponda con la selección.
+     C                   if        *in70 = *off
+      *
+     C                   if        sem( sfnum ) <> *blanks
+     C                   eval      miembro = sem( sfnum )
+     C                   leave
+     C                   endif
+      *
+     C                   if        sep( sfnum ) <> *blanks
+     C                   eval      cmd = %trim(sep(sfnum))
+     C                   eval      len = %len(cmd)
+     C                   call (e)  'QCMDEXC'
+     C                   parm                    cmd
+     C                   parm                    len
+     C                   if        %error
+     C                   exsr      *pssr
+     C                   iter
+     C                   endif
+     C                   endif
+      *
+     C                   endif
+     C                   endif
+     C                   endif
+     C                   enddo
+      *
+     C                   seton                                        lr
+      *
+      *=============================================================================================
+      * Cargo el subfichero con las opciones del menú.
+      *=============================================================================================
+     C     §cargo        begsr
+     C                   clear                   srcdta
+     C                   clear                   set
+     C                   clear                   sem
+     C                   clear                   sep
+     C                   clear                   seo
+     C                   clear                   IndiTitulo
+     C                   clear                   IndiItem
+     C                   open      menu
+     C                   seton                                        69
+     C                   write     f1ct
+     C                   setoff                                       69
+     C                   clear                   sfnum             4 0
+      *
+     C     1             setll     demo
+     C                   read      demo
+     C                   dow       not %eof(menu)
+      *
+     C                   if        Tipo = *blanks
+      *
+      * Obtengo el título.
+     C                   if        indiTitulo < 5
+     C                   add       1             IndiTitulo
+     C                   eval      set(Indititulo) = opcion
+     C                   else
+      *
+      * Grabo las lineas en blanco.
+     C                   eval      item = opcion
+     C                   add       1             sfnum
+     C                   write     f1
+     C                   endif
+      *
+     C                   else
+      *
+      * Grabo las opciones del menú.
+     C                   eval      item = opcion
+     C                   add       1             sfnum
+     C                   write     f1
+      *
+      * Obtengo las acciones.
+     C                   clear                   sem(sfnum)
+     C                   clear                   sep(sfnum)
+     C                   if        accion <> *blanks
+     C                   select
+     C                   when      Tipo = '§'
+     C                   eval      sem(sfnum) = accion
+     C                   when      Tipo = '&'
+     C                   eval      sep(sfnum) = accion
+     C                   endsl
+      *
+      * Obtengo las opciones.
+     C                   clear                   seo(sfnum)
+     C                   eval      opcac      = %subst(item
+     C                                     : %scan('.':item:1) - 2
+     C                                     : 2 )
+     C                   move      opcac         seo(sfnum)
+     C                   endif
+     C                   endif
+      *
+     C                   read      demo
+     C                   enddo
+      *
+     C                   eval      sflsiz = sfnum
+     C     sfnum         cab       0                                  5050
+      *
+      * Grabo el título.
+     C                   if        IndiTitulo <> 0
+     C                   eval      titu1 = set(1)
+     C                   eval      titu2 = set(2)
+     C                   eval      titu3 = set(3)
+     C                   endif
+      *
+     C                   close     menu
+     C                   endsr
+      *
+      *=============================================================================================
+      * Compruebo las autorizaciones del usuario para acceder a la opción seleccionada.
+      *=============================================================================================
+     C     §auto         begsr
+     C                   move      seo(sfnum)    opcac
+      *
+     C     kcontro00     chain     rcontr                             70
+     C                   if        not %found
+     C                   dou       tecla = intro
+     C                   exfmt     f2
+     C                   enddo
+     C                   endif
+     C     finsr         endsr
+      *
+      *=============================================================================================
+      * Control de errores.
+      *=============================================================================================
+     C     *pssr         begsr
+     C                   dou       tecla = Intro
+     C                   exfmt     f4
+     C                   enddo
+     C                   endsr
+

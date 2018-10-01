@@ -1,0 +1,21 @@
+     /*********************************************************************************************/
+     /*                                                                                           */
+     /* Fichero.........: CNTF02                                                                  */
+     /* Descripción.....: Códigos Postales                                                        */
+     /* Especificaciones: ES-180001                                                               */
+     /* Creado por......: macastillo                                                              */
+     /* Con fecha.......: 27/09/2018                                                              */
+     /*                                                                                           */
+     /* Modificaciones..:                                                                         */
+     /*                                                                                           */
+     /* xx/xx/xxxx por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  */
+     /*                                                                                           */
+     /*********************************************************************************************/
+     A                                      UNIQUE
+     A          R RCNTF02
+     A            CP             5A         COLHDG('Código Postal.......')
+     A            LOCALIDAD     50A         COLHDG('Nombre..............')
+      *---------------------------------------------------------------------------------------------
+     A          K CP
+     A          K LOCALIDAD
+

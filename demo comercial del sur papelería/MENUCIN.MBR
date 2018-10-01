@@ -1,0 +1,102 @@
+/**************************************************************************************************/
+/* Nombre........: MENUCIN                                                                        */
+/* Descripción...: Presentación de menús                                                          */
+/* Creado por....: macastillo                                                                     */
+/* Con fecha.....: 27/09/2018                                                                     */
+/* Modificaciones:                                                                                */
+/* ---------------                                                                                */
+/* xx/xx/xxxxx  por xxxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    */
+/*                                                                                                */
+/**************************************************************************************************/
+    Pgm       ( &biblioteca &archivo  &miembroini )
+    dcl       &biblioteca         *char     ( 10 )
+    dcl       &archivo            *char     ( 10 )
+    dcl       &miembroini         *char     ( 10 )
+    dcl       &miembroact         *char     ( 10 )
+    dcl       &opcionact          *char     (  3 )     '001'
+    dcl       &in03               *lgl      (  1 )
+    dcl       &posi               *dec      (  3 0 )   1
+    dcl       &posiO              *dec      (  3 0 )
+
+    if       (( &miembroini = ' ') +
+       *or    ( &Archivo =    ' ' )) +
+             goto        fin
+
+    chgvar    &miembroact         &miembroini
+
+    crtdtaara      dtaara( qtemp/menu ) +
+                   type( *char ) +
+                   len( 990 ) +
+                   value( &miembroact )
+    monmsg     CPF1023 +
+               exec( chgdtaara dtaara( qtemp/menu (1 10 )) +
+                                value( &miembroact ))
+
+    crtdtaara      dtaara( qtemp/opciones ) +
+                   type( *char ) +
+                   len( 300 ) +
+                   value( &opcionact )
+    monmsg     CPF1023 +
+               exec( chgdtaara dtaara( qtemp/opciones) +
+                                value( ' ' ))
+inicio:
+    if        ( &posi > 0 )  +
+              rtvdtaara      dtaara( qtemp/menu ( &posi  10 )) +
+                             rtnvar( &miembroact )
+    ovrdbf    file( menu ) +
+              tofile( &biblioteca/&archivo ) +
+              mbr( &miembroact )
+
+    call      menurin ( &archivo &miembroact &opcionact &in03 )
+    monmsg    cpf4102
+
+    if        ( &in03 = '1' ) +
+     do
+      if     ( &miembroact = &miembroini ) goto fin
+       chgvar     &posi    ( &posi - 10 )
+      if     ( &posi > 0 ) +
+            rtvdtaara    dtaara( qtemp/menu ( &posi 10 )) +
+                         rtnvar( &miembroact )
+
+      if     ( &posiO > 0 ) +
+       do
+        rtvdtaara    dtaara( qtemp/opciones ( &posiO 3 )) +
+                     rtnvar( &opcionact )
+        chgdtaara dtaara(qtemp/opciones ( &posiO 3)) +
+                  value(' ' )
+       enddo
+      chgvar     &posiO    ( &posiO - 3 )
+
+     enddo
+
+     else (do)
+
+      chgvar     &posi    ( &posi + 10 )
+      if     ( &posi > 0 ) +
+             chgdtaara    dtaara( qtemp/menu ( &posi 10 )) +
+                          value( &miembroact )
+
+      if (&posiO = 0 ) +
+         do
+          chgvar &posiO 1
+         enddo
+         else (do)
+          chgvar     &posiO    ( &posiO + 3  )
+         enddo
+      if     ( &posiO > 0 ) +
+             chgdtaara    dtaara( qtemp/opciones ( &posiO 3 )) +
+                          value( &opcionact )
+      chgvar &opcionact '001'
+
+     enddo
+    dltovr    menu
+    goto      inicio
+
+Fin:
+    chgdtaara   dtaara( qtemp/menu) +
+                value( ' ' )
+    chgdtaara   dtaara( qtemp/opciones) +
+                value( ' ' )
+
+    EndPgm
+

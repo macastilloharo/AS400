@@ -1,0 +1,21 @@
+     /*********************************************************************************************/
+     /*                                                                                           */
+     /* Fichero.........: CNTF01                                                                  */
+     /* Descripción.....: Provincias                                                              */
+     /* Especificaciones: ES-180001                                                               */
+     /* Creado por......: macastillo                                                              */
+     /* Con fecha.......: 27/09/2018                                                              */
+     /*                                                                                           */
+     /* Modificaciones..:                                                                         */
+     /*                                                                                           */
+     /* xx/xx/xxxx por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  */
+     /*                                                                                           */
+     /*********************************************************************************************/
+     A                                      UNIQUE
+     A          R RCNTF01
+     A            CODIGO         2S 0       COLHDG('Código..............')
+     A            NOMBRE        50A         COLHDG('Nombre..............')
+      *---------------------------------------------------------------------------------------------
+     A          K CODIGO
+     A          K NOMBRE
+

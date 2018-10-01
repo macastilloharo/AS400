@@ -1,0 +1,359 @@
+      **********************************************************************************************
+      * Nombre............ CNTR02
+      * Descripción....... Mantenimiento de códigos postales
+      * Realizado por..... macastillo
+      * Con fecha......... 27/09/2018
+      * Compilación.......
+      * Modificaciones:
+      * xx/xx/xxxx por xxxxxxxxxx para xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      *
+      **********************************************************************************************
+      *
+     H decedit('0,')  datfmt(*eur)
+      *
+     Fcntf02    uf a e           k disk
+     Fcntw02    cf   e             workstn sfile(f1:sfnum) infds(infds)
+     Fqsysprt   o    f  132        printer oflind(*inof) usropn
+      *
+     D/copy mangel1/demo,teclas
+      *
+     D  tagNuevo       c                   'Crear Código Postal'
+     D  tagEditar      c                   'Editar Código Postal'
+     D  tagBorrar      c                   'Suprimir Código Postal'
+     D  tagTeclas1     c                   'F5=Grabar  F12=Cancelar'
+     D  tagTeclas2     c                   'F12=Cancelar  F23=Suprimir'
+      *
+     D  HayError       s               n
+     D  FechaEur       s               d   datfmt( *EUR )
+     D  Fecha          s              8s 0
+      *
+     D  AccionNuevo    s               n
+     D  AccionEditar   s               n
+     D  AccionBorrar   s               n
+      *
+     D  KCP            s                   like(CP)
+     D  KLOCALI        s                   like(LOCALIDAD)
+      *
+      * Definimos claves.
+     C     kcntf02       klist
+     C                   kfld                    KCP
+     C                   kfld                    KLOCALI
+      *
+      * Presentamos el formato de pantalla Principal.
+     C                   write     f0
+     C                   Dow       '1'
+     C                   If        sfnum = 0
+     C                   write     f1b
+     C                   endif
+     C                   exfmt     f1ct
+      *
+     C                   Eval      AccionNuevo  = *OFF
+     C                   Eval      AccionEditar = *OFF
+     C                   Eval      AccionBorrar = *OFF
+      *
+      * Si pulso F3=Salir.
+     C                   If        tecla = F03
+     C                   leave
+     C                   Endif
+      *
+      * Si pulso F6=Nuevo.
+     C                   If        tecla = F06
+     C                   Eval      AccionNuevo = *ON
+     C                   exsr      §Presentar
+     C                   exsr      §CargarSF
+     C                   Endif
+      *
+      * Si pulsa F8=Imprimir.
+     C                   If        tecla = F08
+     C                   exsr      §Imprimir
+     C                   Endif
+      *
+      * Comprobamos si ha seleccionado alguna opción.
+      * Por *in88 controlaremos si se ha suprimido y refrescaremos los datos.
+     C                   setoff                                       88
+      *
+     C                   exsr      §miroSF
+      *
+     C                   If        *in88
+     C                   exsr      §CargarSF
+     C                   Endif
+      *
+     C                   Enddo
+      *
+      * Finalizamos el programa.
+     C                   Eval      *inLR = *ON
+      *
+      *=============================================================================================
+      *  Para presentar la pantalla para grabar, editar y suprimir datos.
+      *
+      *  Indicadores:
+      *  43 Protegemos campos WCP
+      *
+      *=============================================================================================
+     C     §Presentar    Begsr
+      *
+      * Inicializamos datos.
+     C                   setoff                                       43
+     C                   clear                   WTAG
+     C                   clear                   WTECLAS
+     C                   clear                   WCP
+     C                   clear                   WLOCALI
+      *
+      * Controlamos datos según la acción elegida.
+     C                   If        AccionNuevo
+     C                   eval      WTAG = tagNuevo
+     C                   eval      WTECLAS = tagTeclas1
+     C                   setoff                                       43
+     C                   Endif
+      *
+     C                   If        AccionEditar
+     C                   eval      WTAG = tagEditar
+     C                   eval      WTECLAS = tagTeclas1
+     C                   eval      WCP     = WSCP
+     C                   eval      WLOCALI = WSLOCALI
+     C                   seton                                        43
+     C                   Endif
+      *
+     C                   If        AccionBorrar
+     C                   eval      WTAG = tagBorrar
+     C                   eval      WTECLAS = tagTeclas2
+     C                   eval      WCP     = WSCP
+     C                   eval      WLOCALI = WSLOCALI
+     C                   seton                                        4344
+     C                   Endif
+      *
+      * Presentamos el formato.
+     C                   Dow       '1'
+     C                   exfmt     f2
+     C                   setoff                                       313233    *
+      *
+      * Si pulsa F12=Cancelar.
+     C                   If        tecla = F12
+     C                   leave
+     C                   endif
+      *
+      * Si pulsa F5=Grabar.
+     C                   If            tecla = F05
+     C                             and (AccionNuevo or AccionEditar)
+     C                   exsr      §Validar
+     C                   If        not HayError
+     C                   exsr      §Grabar
+     C                   Endif
+     C                   If        AccionEditar
+     C                   leave
+     C                   Endif
+     C                   Endif
+      *
+      * Si pulsa F23=Suprimir.
+     C                   If            tecla = F23
+     C                             and AccionBorrar
+     C                   exsr      §Grabar
+     C                   leave
+     C                   Endif
+      *
+     C                   Enddo
+      *
+     C                   Endsr
+      *
+      *
+      *=============================================================================================
+      *  §Validar: Para realizar la validación del formato de pantalla.
+      *=============================================================================================
+     C     §Validar      Begsr
+      *
+     C                   Eval      HayError = *OFF
+      *
+      * Validamos el código.
+      * --------------------
+     C                   testn                   WCP                  30
+     C                   If           WCP = *Blanks
+     C                             or WCP = '00000'
+     C                             or not *in30
+     C                   seton                                        31
+     C                   Endif
+      *
+      * Validamos el nombre.
+      * --------------------
+     C     WLOCALI       cab       *blanks                                33
+      *
+      * Validamos que no se repita.
+      * ---------------------------
+     C                   If        AccionNuevo
+     C                   eval      KCP = WCP
+     C                   eval      KLOCALI = WLOCALI
+     C     kcntf02       chain(n)  rcntf02
+     C                   If        %found
+     C                   eval      *in32 = *ON
+     C                   Endif
+     C                   Endif
+      *
+      * Controlamos la existencia de errores.
+      * -------------------------------------
+     C                   If           *in31
+     C                             or *in32
+     C                             or *in33
+     C                   eval      HayError = *ON
+     C                   Endif
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  §Grabar: Para grabar los datos.
+      *=============================================================================================
+     C     §Grabar       Begsr
+      *
+     C                   If        AccionNuevo
+     C                   Eval      CP        = WCP
+     C                   Eval      LOCALIDAD = WLOCALI
+     C                   write     rcntf02
+     C                   Endif
+      *
+     C                   If        AccionEditar
+     C                   eval      KCP = WSCP
+     C                   eval      KLOCALI = WSLOCALI
+     C     kcntf02       chain     rcntf02
+     C                   If        %found
+     C                   delete    rcntf02
+     C                   Eval      CP = WCP
+     C                   Eval      LOCALIDAD = WLOCALI
+     C                   write     rcntf02
+     C                   Eval      WSLOCALI = LOCALIDAD
+     C                   Endif
+     C                   Endif
+      *
+     C                   If        AccionBorrar
+     C     WSCP          chain     rcntf02
+     C                   If        %found
+     C                   delete    rcntf02
+     C                   seton                                        88
+     C                   Endif
+     C                   Endif
+      *
+     C                   clear                   WCP
+     C                   clear                   WLOCALI
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  Para preparar y cargar el subfichero.
+      *=============================================================================================
+     C     §CargarSF     Begsr
+      *
+     C                   seton                                        69
+     C                   write     f1ct
+     C                   setoff                                       69
+      *
+     C                   clear                   sfnum             4 0
+     C                   clear                   wsopcion
+      *
+     C     *loval        setll     rcntf02
+     C                   Dow       '1'
+     C                   read      rcntf02                                20
+     C   20              leave
+     C                   add       1             sfnum
+     C                   Eval      WSCP     = CP
+     C                   Eval      WSLOCALI = LOCALIDAD
+     C                   write     f1
+     C                   Enddo
+      *
+     C     sfnum         cab       0                                  5050
+     C   50              Eval      posi = 1
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *   Para realizar la salida impresa.
+      *=============================================================================================
+     C     §Imprimir     Begsr
+      *
+     C                   open      qsysprt
+      *
+     C                   except    cabe
+      *
+     C     *loval        setll     rcntf02
+     C                   setoff                                       20
+     C                   Dow       *in20 = *off
+     C                   read      rcntf02                                20
+      *
+     C                   If        *inof
+     C                   except    cabe
+     C                   Endif
+      *
+     C                   except    deta
+      *
+     C                   Enddo
+      *
+     C                   close     qsysprt
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  Tareas a ejecutar antes del inicio.
+      *=============================================================================================
+     C     *Inzsr        Begsr
+      *
+      * Inicializamos datos.
+     C                   movel     *date         FechaEur
+     C                   movel     FechaEur      Fecha
+      *
+      * Preparamos subfichero.
+     C                   exsr      §CargarSF
+      *
+     C                   Endsr
+      *
+      *=============================================================================================
+      *  Para comprobar las opciones seleccionadas.
+      *=============================================================================================
+     C     §miroSF       Begsr
+      *
+     C                   If        sfnum <> 0
+      *
+     C                   Dow       '1'
+     C                   readc     f1                                     20
+     C   20              leave
+      *
+     C                   eval      AccionEditar = *OFF
+     C                   eval      AccionBorrar   = *OFF
+      *
+     C                   If        WSOPCION = 2
+     C                   eval      AccionEditar = *ON
+     C                   exsr      §Presentar
+     C                   Endif
+      *
+     C                   If        WSOPCION = 4
+     C                   eval      AccionBorrar   = *ON
+     C                   exsr      §Presentar
+     C                   Endif
+      *
+     C                   clear                   WSOPCION
+     C                   update    f1
+     C                   Enddo
+      *
+     C                   Endif
+      *
+     C                   Endsr
+      *
+      *
+      *
+     OQSYSPRT   e            cabe        1    02
+     O                                           10 'EMPRESA   '
+     O                                           69 ' Fecha:'
+     O                       Fecha               80 '  -  -    '
+     O          e            cabe        1
+     O                                           48 'LISTADO DE C. POSTALES'
+     O                                           69 'Página:'
+     O                       page          z     80
+     O          e            cabe        1
+     O                                           48 '----------------------'
+     O          e            cabe        1
+     O                                            6 'CP    '
+     O                                           17 'LOCALIDAD'
+     O          e            cabe        1  2
+     O                                            6 '--    '
+     O                                           33 '-------------------------'
+     O                                           58 '-------------------------'
+     O          e            deta           1
+     O                       CP                   6
+     O                       LOCALIDAD           58
+
+

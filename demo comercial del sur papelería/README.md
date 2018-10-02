@@ -58,7 +58,7 @@ Los miembros utilizados son los siguientes:
 <br>
 <image src="https://user-images.githubusercontent.com/15638469/46304819-fbd83780-c5af-11e8-9d14-27dae77cedef.png" />
 <br>
-<image src="https://user-images.githubusercontent.com/15638469/46304821-fda1fb00-c5af-11e8-88db-71c44cbc6b58.png" />
+<image src="https://user-images.githubusercontent.com/15638469/46334649-26b0a300-c625-11e8-89e9-5c3b6931cb0d.png" />
 
 
 
